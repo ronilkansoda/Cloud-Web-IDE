@@ -1,11 +1,20 @@
 import { useState } from 'react'
+import './App.css'
+import Terminal from './components/terminal'
+
 function App() {
   const [count, setCount] = useState(0)
 
   return (
-    <>
-      <h1>Hello from Client</h1>
-    </>
+    <div className='playground-container'>
+      <div className="editor-container">
+        <div className="files"></div>
+        <div className="editor"></div>
+      </div>
+      <div className='terminal-container'>
+        <Terminal />
+      </div>
+    </div>
   )
 }
 
