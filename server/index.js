@@ -4,7 +4,8 @@ const { Server } = require('socket.io');
 const pty = require('node-pty');
 const fs = require('fs');
 const path = require('path');
-const cors = require('cors')
+const cors = require('cors');
+const chokidar = require('chokidar');
 
 const app = express();
 const server = http.createServer(app);
@@ -26,9 +27,14 @@ const ptyProcess = pty.spawn(shell, [], {
     env: process.env
 });
 
+chokidar.watch('./user').on('all', (event, path) => {
+    io.emit('file:refresh', path)
+});
+
 ptyProcess.onData(data => {
     const cleanData = data.replace(/\x1B\[[0-9;]*[mK]/g, '');
     io.emit('terminal:data', cleanData);
+    // console.log(cleanData)
 })
 
 io.on('connection', (socket) => {
@@ -37,6 +43,8 @@ io.on('connection', (socket) => {
     // ptyProcess.on('data', (data) => {
     //     socket.emit('terminal:data', data);
     // });
+
+    // socket.emit("file:refresh");
 
     socket.on('terminal:write', (data) => {
         ptyProcess.write(data);

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import './App.css'
 import Terminal from './components/terminal'
 import FileTree from './components/tree'
+import socket from './socket'
 
 function App() {
   const [fileTree, setFileTree] = useState({})
@@ -17,6 +18,12 @@ function App() {
     getFileTree()
   }, [])
 
+  useEffect(() => {
+    socket.on("file:refresh", getFileTree);
+    return () => {
+      socket.off("file:refresh", getFileTree);
+    }
+  }, [])
 
   return (
     <div className='playground-container'>
