@@ -1,14 +1,19 @@
-const FileTreeNode = ({ fileName, nodes }) => {
+const FileTreeNode = ({ fileName, nodes, onSelect, path }) => {
     const isDir = !!nodes;
     return (
-        <div>
-            <p className={isDir ? "file-node" : ""}>{fileName}</p>
+        <div onClick={(e) => {
+            e.stopPropagation()
+            if (isDir) return;
+
+            onSelect(path)
+        }}>
+            <p className={isDir ? "folder-node" : "file-node"}>{fileName}</p>
 
             {nodes && (
                 <ul>
                     {Object.keys(nodes).map((child) => (
                         <li key={child} style={{ marginLeft: '20px' }}>
-                            <FileTreeNode fileName={child} nodes={nodes[child]} />
+                            <FileTreeNode onSelect={onSelect} fileName={child} nodes={nodes[child]} path={path + "/" + child} />
                         </li>
                     ))}
                 </ul>
@@ -17,9 +22,9 @@ const FileTreeNode = ({ fileName, nodes }) => {
     )
 }
 
-export default function FileTree({ tree }) {
+export default function FileTree({ tree, onSelect }) {
     return (
-        <FileTreeNode fileName="/"
-            nodes={tree} />
+        <FileTreeNode onSelect={onSelect} fileName="/"
+            nodes={tree} path="" />
     )
 }

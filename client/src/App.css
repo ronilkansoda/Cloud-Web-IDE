@@ -19,6 +19,9 @@
 
 .file-node {
     cursor: pointer;
+}
+
+.folder-node {
     font-size: large;
     font-weight: 500;
 }
